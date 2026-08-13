@@ -8,7 +8,7 @@ app.get("/health", (req, res) => {
 
 
 
-const PORT =8001;
+const PORT = 8080;
 
 // עמוד של הברכות
 app.get("/", (req, res) => {
