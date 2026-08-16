@@ -8,14 +8,9 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                echo 'Checking out code from GitHub repository securely...'
-                checkout scmGit(
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com', 
-                        credentialsId: 'github-jen'
-                    ]]
-                )
+                echo 'Checking out code from GitHub repository automatically...'
+                // פקודה חכמה הלוקחת את הגדרות הגיט וההרשאות ישירות מהגדרות ה-Job בג'נקינס
+                checkout scm 
             }
         }
 
