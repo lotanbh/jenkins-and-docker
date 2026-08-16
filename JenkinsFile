@@ -2,28 +2,21 @@ pipeline {
     agent any
 
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('* * * * *') // בודק שינויים בגיט בכל דקה
     }
 
     stages {
-
+        // שלב Checkout יחיד ומאובטח המשתמש בטוקן שלך
         stage('Checkout Code') {
             steps {
-                // github-jen
+                echo 'מושכים את הקוד מהמאגר בצורה מאובטחת...'
                 checkout scmGit(
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/lotanbh/jenkins-and-docker.git', credentialsId: 'github-jen'
-                        ]]
-                    )
-            }
-        }
-
-        stage('Checkout') {
-            steps {
-                echo 'מושכים את הקוד מהמאגר'
-                echo 'Checking out...'
-                checkout scm
+                        url: 'https://github.com/lotanbh/jenkins-and-docker.git', 
+                        credentialsId: 'github-jen'
+                    ]]
+                )
             }
         }
 
@@ -43,18 +36,20 @@ pipeline {
 
         stage('Build image') {
             steps {
-                echo 'Building...'
-                echo 'בונים Docker Image עבור האפליקציה'
+                echo "בונים Docker Image עבור האפליקציה (בילד #${BUILD_NUMBER})..."
+                // שימוש במספר הבילד הדינמי כתגית
                 sh 'docker build -t greets-app:${BUILD_NUMBER} -t greets-app:latest .'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
-                echo 'מריצים את האפליקציה על פורט 8080'
-                sh 'docker rm -f greets-live || true'
-                sh 'docker run -d --name greets-live -p 8080:8080 greets-app:latest'
+                echo 'מריצים את האפליקציה על פורט 8081 (כדי לא להתנגש עם ג'נקינס)...'
+                sh 'docker rm -f greets-live || true' // מונע קריסה אם הקונטיינר לא היה קיים
+                
+                // שינינו את הפורט החיצוני ל-8081. הוא יישאר קבוע ולא תצטרך לשנות אותו יותר לעולם!
+                sh 'docker run -d --name greets-live -p 8081:8080 greets-app:latest'
+                echo 'האפליקציה זמינה בכתובת: http://localhost:8081'
             }
         }
     }
