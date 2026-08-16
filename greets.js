@@ -26,6 +26,9 @@ const greets = [
   "The future belongs to those who believe in the beauty of their dreams.",
   "The only way to do great work is to love what you do.",
   "Don't be afraid to give up the good to go for the great.",
+  "You miss 100% of the shots you don't take.",
+  "The harder you work for something, the greater you'll feel when you achieve it.",
+  "Dream big and dare to fail.",
 ];
 
 function randomGreet() {
