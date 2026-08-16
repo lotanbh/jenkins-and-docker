@@ -6,6 +6,19 @@ pipeline {
     }
 
     stages {
+
+        stage('Checkout Code') {
+            steps {
+                // github-jen
+                checkout scmGit(
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/lotanbh/jenkins-and-docker.git', credentialsId: 'github-jen'
+                        ]]
+                    )
+            }
+        }
+
         stage('Checkout') {
             steps {
                 echo 'מושכים את הקוד מהמאגר'
