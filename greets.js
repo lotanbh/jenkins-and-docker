@@ -29,7 +29,7 @@ const greets = [
   "You miss 100% of the shots you don't take.",
   "The harder you work for something, the greater you'll feel when you achieve it.",
   "Dream big and dare to fail.",
-  ""
+  
   
 ];
 
