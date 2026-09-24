@@ -1,53 +1,51 @@
 pipeline {
     agent any
 
-    triggers {
-        pollSCM('* * * * *') // Checks for Git changes every minute
-    }
-
     stages {
-        stage('Checkout Code') {
+
+        stage('Checkout') {
             steps {
-                echo 'Checking out code from GitHub repository automatically...'
-                // פקודה חכמה הלוקחת את הגדרות הגיט וההרשאות ישירות מהגדרות ה-Job בג'נקינס
-                checkout scm 
+                echo 'מושכים את הקוד מהמאגר'
+                echo 'Checking out...'
+                checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing dependencies directly on Jenkins...'
+                echo 'Installing dependencies...'
                 sh 'npm ci'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running application tests...'
+                echo 'Testing...'
+                echo 'מריצים את הבדיקות ואם יש שגיאות הבנייה תיכשל כאן'
                 sh 'npm test'
             }
         }
 
         stage('Build image') {
             steps {
-                echo "Building Docker image for build #${BUILD_NUMBER}..."
-                sh 'docker build -t greets-app:${BUILD_NUMBER} -t greets-app:latest .'
+                echo 'Building...'
+                echo 'בונים Docker Image'
+                sh 'docker build -t jenkins:${BUILD_NUMBER} -t jenkins:latest .'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application on port 8081 to avoid conflict with Jenkins...'
-                sh 'docker rm -f greets-live || true' 
-                sh 'docker run -d --name greets-live -p 8081:8080 greets-app:latest'
-                echo 'Application is live and available at http://localhost:8081'
+                echo 'Deploying...'
+                echo ' מריצים את הגירסה החדשה על פורט 8001'
+                sh 'docker run -d --name greets-live -p 8001:8001 jenkins:latest'
             }
         }
-    }
     
+    }
     post {
         success {
-            echo 'The Pipeline completed successfully!'
+            echo 'The Pipeline succeeded!'
         }
         failure {
             echo 'The Pipeline failed!'
